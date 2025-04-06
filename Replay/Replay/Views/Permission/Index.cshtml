@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Replay.Models.Account.Permission>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewData["Title"] = "Berechtigungen";
+    ViewData["Hero"] = "Berechtigungen";
+}
+
+
+<style>
+    tr {
+        background-color: #fff;
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Berechtigungsname
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a class="btn btn-danger btn-sm" asp-controller="Permission" asp-action="Delete" role="button" asp-route-id=@item.Id><i class="bi bi-trash3"></i> Löschen</a>
+                </td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-controller="Permission" asp-action="Edit" role="button" asp-route-id=@item.Id><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

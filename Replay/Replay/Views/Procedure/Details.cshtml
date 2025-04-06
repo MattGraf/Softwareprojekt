@@ -1,0 +1,148 @@
+@model Replay.ViewModels.ProcedureDetailsViewModel
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        .overdue {
+            color: red;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .hidden {
+            display: none;
+        }
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        .table .table {
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+@{
+    ViewData["Title"] = "Vorgangsdetailansicht";
+    ViewData["Hero"] = "Vorgänge";
+}
+
+<a class="btn btn-dark" asp-controller="Procedure" asp-action="Index"><i class="bi bi-arrow-left-circle"></i> Zurück zur Übersicht</a>
+<br />
+<br />
+
+<div>
+    <h3>Vorgangsdetails</h3>
+    <hr />
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control-plaintext" readonly value="@Model.name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">zugrunde liegender Prozess</label>
+        <input type="text" class="form-control-plaintext" readonly value=" @Model.basedProcess.Name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Zieldatum</label>
+        <input type="text" class="form-control-plaintext" readonly value="@Model.Deadline.ToString("dd.MM.yyyy")">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <div class="form-control-plaintext">Abgeschlossene Aufgaben: @Model.completedTasks</div>
+        <div class="form-control-plaintext">Offene Aufgaben: @Model.openTasks</div>
+        <div class="form-control-plaintext">In Bearbeitung: @Model.inprogressTasks</div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Aufgaben</label>
+        <button id="toggleTasks">Aufgaben anzeigen/verbergen</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Fälligkeitsdatum</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="taskList" class="hidden">
+                @if (Model.makandraTasks != null && Model.makandraTasks.Any())
+                {
+                    @foreach (var task in Model.makandraTasks)
+                    {
+                        <tr class="@(task.TargetDate < DateTime.Now ? "overdue" : "")">
+                            <td>@Html.ActionLink(task.Name, "Detail", "MakandraTask", new { id = task.Id }, null)</td>
+                            <td class="date">@task.TargetDate.ToString("dd.MM.yyyy")</td>
+                            <td>@task.State.Name</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Vertragsart</label>
+        <input type="text" class="form-control-plaintext" readonly value="@Model.EstablishingContractType.Name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Zielabteilung/en</label>
+        <ul class="list-group">
+            @foreach (var depart in Model.TargetDepartment)
+            {
+                <li class="list-group-item">
+                    @depart.Name
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Verantwortlicher</label>
+        <input type="text" class="form-control-plaintext" readonly value="@Model.ResponsiblePerson.FullName">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Zielperson</label>
+        <input type="text" class="form-control-plaintext" readonly value="@Model.ReferencePerson.FullName">
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('tbody tr');
+        const today = new Date();
+
+        rows.forEach(row => {
+            const dateText = row.querySelector('.date').textContent;
+            const targetDate = new Date(dateText.split('.').reverse().join('-'));
+
+            if (targetDate < today) {
+                row.classList.add('overdue');
+            }
+        });
+    });
+        document.getElementById("toggleTasks").addEventListener("click", function() {
+            var taskList = document.getElementById("taskList");
+            if (taskList.classList.contains("hidden")) {
+                taskList.classList.remove("hidden");
+            } else {
+                taskList.classList.add("hidden");
+            }
+        });
+</script>

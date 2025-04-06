@@ -1,0 +1,153 @@
+@model Replay.ViewModels.Task.MakandraTaskEditViewModel
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        * {
+            box-shadow: none !important;
+        }
+        .form-check-input:checked {
+            background-color: rgb(20, 18, 16);
+            border-color: rgb(20, 18, 16);
+        }
+        .form-check-input {
+            border-radius: 0.25em;
+        }
+        #editbuttonelement {
+            text-align: left;
+        }
+        #startbuttonelement {
+            text-align: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .alignright {
+            text-align: right;
+        }
+</style>
+</head>
+
+@{
+    ViewData["Hero"] = "Aufgabe bearbeiten";
+    ViewData["Title"] = @Model.Name;
+}
+
+<form method="post" asp-controller="MakandraTask" asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <h3>Name</h3>
+    <hr>
+    <div class="form-group">
+        <input class="form-control" id="Name" asp-for="Name" type="text">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <h3>Fälligkeit</h3>
+    <hr>
+    <div class="form-group">
+        <input class="form-control" id="TargetDate" asp-for="TargetDate" type="date" value="@Model.TargetDate.ToString("yyyy-MM-dd")">
+        <span asp-validation-for="TargetDate" class="text-danger"></span>
+    </div>
+
+    <h3>Notizen</h3>
+    <hr>
+    <div class="form-group">
+        <textarea class="form-control" id="Notes" asp-for="Notes" rows="10"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <h3>Anleitung</h3>
+    <hr>
+    <div class="form-group">
+        <textarea class="form-control" id="Instruction" asp-for="Instruction" rows="10"></textarea>
+        <span asp-validation-for="Instruction" class="text-danger"></span>
+    </div>
+
+    <h3>Aufgabenstatus</h3>
+    <hr>
+    <div class="form-group">
+        <select asp-for="SelectedStateId" class="form-control">
+            @foreach (var state in Model.States)
+            {
+                <option value="@state.Id">@state.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedStateId" class="text-danger"></span>
+    </div>
+
+    <h3>Aufgabenzuständiger</h3>
+    <hr>
+    <div class="form-group">
+        <select asp-for="SelectedAssigneeId" class="form-control">
+            <option value="">Kein Benutzer</option>
+            @foreach (var assignee in Model.PossibleAssignees)
+            {
+                <option value="@assignee.Id">@assignee.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedAssigneeId" class="text-danger"></span>
+    </div>
+
+    <h3>Verantwortliche Rolle</h3>
+    <hr>
+    <div class="form-group">
+        <select asp-for="SelectedRoleId" id="SelectedRoleId" class="form-control">
+            <option value="">Keine Rolle</option>
+            @foreach (var role in Model.PossibleRoles)
+            {
+                <option value="@role.Id">@role.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedRoleId" class="text-danger"></span>
+    </div>
+
+    <h3>Zugriffsrechte</h3>
+    <div>
+        <ul class="list-group">
+        @for (int i = 0; i < Model.PossibleEditors.Count; i++)
+        {
+            <li class="list-group-item">
+                <input type="hidden" asp-for="PossibleEditors[i].Id" value="@Model.PossibleEditors[i].Id"/>
+                <input type="hidden" asp-for="PossibleEditors[i].Name" value="@Model.PossibleEditors[i].Name"/>
+                <input class="form-check-input me-1" type="checkbox" asp-for="PossibleEditors[i].IsSelected">
+                <label class="form-check-label" for="PossibleEditors[i].IsSelected">@Model.PossibleEditors[i].Name</label>
+                <span asp-validation-for="PossibleEditors[i].IsSelected" class="text-danger"></span>
+            </li>
+        }
+        </ul>
+    </div>
+       
+    <h3>Archiviert</h3>
+    <hr>
+    <div class="form-group">
+        <input class="form-check-input me-1" type="checkbox" asp-for="Archived">
+        <label class="form-check-label" for="Archived">Ja</label>
+        <span asp-validation-for="Archived" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <div class="text-left">
+            @if(!Model.Archived)
+            {
+                <a class="btn btn-primary" asp-controller="MakandraTask" asp-action="Index" role="button">Zurück zur Übersicht</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-controller="MakandraTask" asp-action="Archive" role="button">Zurück zur Übersicht</a>                
+            }
+        </div>
+        <div class="form-group confirmbutton" class="text-right">
+            <input type="submit" value="Bestätigen" id="edit" class="btn btn-primary">
+        </div>
+    </div>
+</form>

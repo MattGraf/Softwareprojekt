@@ -1,0 +1,141 @@
+@model Replay.ViewModels.ProcedureUserViewModel
+
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        .overdue {
+            color: red;
+        }
+        * {
+            box-shadow: none !important;
+        }
+        .form-check-input:checked {
+            background-color: rgb(20, 18, 16);
+            border-color: rgb(20, 18, 16);
+        }
+        .form-check-input {
+            border-radius: 0.25em;
+        }
+        .alignright {
+            text-align: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        tr {
+            width: 100%;
+        }
+        thead th {
+            border-bottom: 2px solid black;
+        }
+        .archive {
+            text-align: right;
+        }
+        .status-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .status-details div {
+            margin: 2px 0;
+        }
+        .statuscompleted {
+            color: green;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .statusopen {
+            color: red;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .statusinprogress {
+            color: orange;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 20px;
+            color: black;
+            border-radius: 5px;
+        }
+</style>
+</head>
+
+@{
+    ViewData["Title"] = "Vorgangsübersicht";
+    ViewData["Hero"] = "Vorgänge";
+}
+<div class="archive">
+<a asp-action="ProcedureArchive" class="btn btn-primary"><i class="bi bi-arrow-right"></i> Zum Archiv</a>
+</div>
+<h2>Vorgangsübersicht</h2>
+<br>
+<table>
+    <thead>
+        <tr>
+            <th>Vorgang</th>
+            <th>Zieldatum</th>
+            <th>Status</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var procedure in Model.Procedures)
+        {
+            <tr>
+                <td>@procedure.name</td>
+                <td>@procedure.Deadline.ToString("dd.MM.yyyy")</td>
+                <td class="status-details">
+                        <div class="statuscompleted">Abgeschlossene Aufgaben: @procedure.completedTasks</div>
+                        <div class="statusinprogress">Aufgaben in Bearbeitung: @procedure.inprogressTasks</div>
+                        <div class="statusopen">Offene Aufgaben: @procedure.openTasks</div>
+                        <div class="progress-container">
+                                @{
+                                var progressPercentage = (procedure.progressbar * 100).ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                <div class="progress-bar" style="width:@progressPercentage%">
+                        </div>
+                </td>
+                <td><a asp-action="Details" asp-route-id="@procedure.Id" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                    <a asp-action="Edit" asp-route-id="@procedure.Id" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                    <a asp-action="Archive" asp-route-id="@procedure.Id" class="btn btn-danger btn-sm"><i class="bi bi-archive-fill"></i> Archivieren</a>
+                    <button type="button" class="btn btn-success btn-sm save-button" style="display: none;"><i class="bi bi-floppy"></i></button>
+                </td>
+            </tr>
+        }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('#task-table tbody tr');
+            const today = new Date();
+
+            rows.forEach(row => {
+                const dateCell = row.querySelector('.date');
+                const targetDate = new Date(dateCell.textContent);
+
+                if (targetDate < today) {
+                    row.classList.add('overdue');
+                }
+            });
+        });
+    </script>
+
+    </tbody>
+</table>

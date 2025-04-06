@@ -1,0 +1,81 @@
+@model Replay.ViewModels.TaskTemplateViewModels.TaskTemplateDetailViewModel;
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+
+@{
+    ViewData["Title"] = "TaskTemplateDetails";
+    ViewData["Hero"] = "AUFGABENVORLAGEN - DETAILS";
+}
+ 
+
+<h3>@Model.Name</h3>
+    <hr>
+    <dl class="row">
+
+        <dt class="col-sm-2">Prozess</dt>
+
+        <dd class="col-sm-10">@Model.Process</dd>
+
+        <dt class="col-sm-2">Vertragsziele</dt>
+
+        @if(Model.ContractTypes.Count() == 0) {
+            <dd class="col-sm-10">-</dd>
+        } else {
+            <dd class="col-sm-10">
+                @foreach (var contractType in Model.ContractTypes) {
+                        <li>@contractType</li>
+                }
+            </dd>
+        }
+
+        <dt class="col-sm-2">Abteilungen</dt>
+
+        @if(Model.Departments.Count() == 0) {
+            <dd class="col-sm-10">-</dd>
+        } else {
+            <dd class="col-sm-10">
+                @foreach (var department in Model.Departments) {
+                        <li>@department</li>
+                }
+            </dd>
+        }
+
+        <dt class="col-sm-2">Fälligkeit</dt>
+        <dd class="col-sm-10">@Model.DuedateName</dd>
+
+        <dt class="col-sm-2">Archiviert</dt>
+
+        @if (Model.Archived) {
+            <dd class="col-sm-10">Ja</dd>   
+        } else {
+            <dd class="col-sm-10">Nein</dd>
+        }
+
+        <dt class="col-sm-2">Übliche Verantwortung</dt>
+
+        <dd class="col-sm-10">@Model.DefaultResponsible</dd> 
+
+        <dt class="col-sm-2">Anleitung</dt>
+        @if(Model.Instruction is null) {
+            <dd class="col-sm-10">-</dd>
+        } else {
+             <dd class="col-sm-10">@Html.Raw(Model.Instruction.Replace("\n", "<br/>").Replace("\r", ""))</dd>
+        }
+
+    </dl>
+
+    @if(Model.ReturnPage == 1) {
+        <a asp-action="Index" class="btn btn-secondary">Zurück</a>
+    } else if (Model.ReturnPage == 2) {
+        <a asp-action="ArchivedTaskTemplatesIndex" class="btn btn-secondary">Zurück</a>
+    } else {
+        
+        TempData["ProcessId"] = Model.ProcessId;
+        <a asp-action="DetailsProcessReturn" class="btn btn-secondary">Zurück</a>
+    }
+
+</div>

@@ -1,0 +1,140 @@
+@model Replay.ViewModels.Task.MakandraTaskDetailViewModel
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        * {
+            box-shadow: none !important;
+        }
+        .form-check-input:checked {
+            background-color: rgb(20, 18, 16);
+            border-color: rgb(20, 18, 16);
+        }
+        .form-check-input {
+            border-radius: 0.25em;
+        }
+        #editbuttonelement {
+            text-align: left;
+        }
+        #startbuttonelement {
+            text-align: right;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .alignright {
+            text-align: right;
+        }
+        .formatted-text {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+        font-family: Roboto
+        }     
+    </style>
+</head>
+
+@{
+    ViewData["Hero"] = "Aufgabendetails";
+    ViewData["Title"] = @Model.Name;
+    System.Globalization.CultureInfo germanCulture = new System.Globalization.CultureInfo("de-DE");
+}
+
+<h2>@Model.Name</h2>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.State)</dt>
+        <dd class="col-sm-10" id="state">@Model.State</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Assignee)</dt>
+        <dd class="col-sm-10">
+            @if(Model.Assignee == null)
+            {
+                <text>Kein Aufgabenzuständiger</text>
+            }
+            else
+            {
+                @Model.Assignee
+            }
+        </dd>
+
+        <dt class="col-sm-2" >@Html.DisplayNameFor(model => model.ResponsibleRole)</dt>
+        <dd class="col-sm-10"id="role">
+            @if(Model.ResponsibleRole == null)
+            {
+                <text>Keine zugewiesene Rolle</text>
+            }
+            else
+            {
+                @Model.ResponsibleRole     
+            }
+        </dd> 
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TargetDate)</dt>
+        <dd class="col-sm-10"id="targetdate">@Model.TargetDate.ToString("dd.MMMM.yyyy", germanCulture)</dd>
+        
+        <dt class="col-sm-2" >@Html.DisplayNameFor(model => model.Notes)</dt>
+        <dd class="col-sm-10">
+            <pre class="formatted-text" id="notes">@Model.Notes</pre>
+        </dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Instruction)</dt>
+        <dd class="col-sm-10">
+            <pre class="formatted-text" id="instruction">@Model.Instruction</pre>
+        </dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Procedure)</dt>
+        <dd class="col-sm-10">@Model.Procedure</dd>
+        
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.EditAccess)</dt>
+        <dd class="col-sm-10"id="editaccess">
+            @if(Model.EditAccess.Count == 0)
+            {
+                <text>-</text>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var role in Model.EditAccess)
+                    {
+                        <li>@role</li>
+                    }
+                </ul>
+            }
+        </dd>        
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Archived)</dt>
+        <dd class="col-sm-10">
+            @if (Model.Archived)
+            {
+                <text>Ja</text>
+            }
+            else
+            {
+                <text>Nein</text>
+            }
+        </dd>
+    </dl>
+    @if(!Model.Archived)
+    {
+        <a asp-action="Index" class="btn btn-dark" ><i class="bi bi-arrow-left-circle"></i> Zurück zur Übersicht</a>
+    }
+    else
+    {
+        <a asp-action="Archive" class="btn btn-dark" ><i class="bi bi-arrow-left-circle"></i> Zurück zur Übersicht</a>        
+    }
+</div>

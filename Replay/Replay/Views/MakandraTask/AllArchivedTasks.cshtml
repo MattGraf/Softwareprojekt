@@ -1,0 +1,136 @@
+@model Replay.ViewModels.Task.MakandraTaskUserViewModel
+@using System.Globalization;
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .status-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-arrow {
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .status-arrow i {
+            font-size: 18px; /* Größe der Pfeile */
+        }
+
+        .status-arrow.hidden {
+            display: none;
+        }
+        .save-button.hidden {
+            display: none;
+        }
+
+        button {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+        }
+
+    </style>
+</head>
+
+@{
+    ViewData["Hero"] = "Alle erledigten Aufgaben";
+    CultureInfo germanCulture = new CultureInfo("de-DE");
+}
+
+<form method="get" asp-action="AllArchivedTasks" class="mb-3">
+    <button asp-action="AllTasks" type="submit" class="btn btn-success">
+        <i class="bi bi-arrow-left-circle">
+        </i>
+        Alle Aufgaben
+    </button> 
+    <div class="form-group row">
+        <label for="procedureFilter" class="col-sm-2 col-form-label">Vorgangsfilter:</label>
+        <div class="col-sm-8">
+            <input type="text" name="procedureFilter" id="procedureFilter" value="@ViewData["ProcedureFilter"]" class="form-control" placeholder="Vorgangsnamen eingeben" />
+        </div>
+        <div class="col-sm-2 d-flex align-items-center">
+            <button type="submit" class="btn btn-dark">
+                <i class="bi bi-filter-circle"></i>
+                Filtern
+            </button>
+            <button type="submit" asp-action="ResetFilterAllArchivedTasks" class="btn btn-dark">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Tasklist != null && Model.Tasklist.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th asp-action="AllArchivedTasks" asp-route-sortOrder="@ViewData["DateSortParam"]">
+                        Aufgabe
+                </th>
+                <th asp-action="AllArchivedTasks" asp-route-sortOrder="@ViewData["DateSortParam"]">
+                        Vorgang
+                </th>
+                <th>
+                    <a asp-action="AllArchivedTasks" asp-route-sortOrder="@ViewData["DateSortParam"]">
+                        <i class="bi bi-arrow-down-up"></i>
+                    </a>
+                        Zieldatum
+                </th>
+                <th>Letzter Aufgabenstatus</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model.Tasklist)
+            {
+                @if (task != null)
+                {
+                    <tr>
+                        <td>@task.Name</td>
+                        <td>@task.Procedure</td>                   
+                        <td>
+                            @task.TargetDate.ToString("dd.MM.yyyy", germanCulture)
+                            @if (task.TargetDate < DateTime.Now)
+                            {
+                                <text> (Überfällig)</text>
+                            }
+                        </td>
+                        <td>
+                            <span class="current-status" data-task-id="@task.Id">@task.State</span>
+                        </td>
+                        <td>
+                            <a asp-action="Detail" asp-route-id="@task.Id" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                            <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                            <button type="button" class="btn btn-success btn-sm save-button" style="display: none;" data-task-id="@task.Id">
+                                <i class="bi bi-floppy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Keine Aufgaben gefunden.</p>
+}

@@ -1,0 +1,64 @@
+# This file is a template, and might need editing before it works on your project.
+# Authors: Matthias Grafberger, Felix Nebel
+stages:
+  - unit-test
+  - frontend-test
+  - deploy
+
+# Author: Matthias Grafberger
+team13-unit-tests:
+  stage: unit-test
+  tags:
+    - sopro
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  script:
+    - cd $CI_PROJECT_DIR/Endabnahme/Replay/Replay.UnitTests #Run the UnitTests
+    - dotnet restore
+    - dotnet test --no-restore --verbosity normal
+
+# Author: Matthias Grafberger
+team13-frontend-tests:
+  stage: frontend-test
+  tags:
+    - sopro
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  before_script:
+    - chmod +x $CI_PROJECT_DIR/Endabnahme/Replay/Replay/install_chrome.sh #Activate rights to run the sh-file
+    - $CI_PROJECT_DIR/Endabnahme/Replay/Replay/install_chrome.sh #Run the sh-file
+  script:
+    - cd $CI_PROJECT_DIR/Endabnahme/Replay/Replay #Run the project
+    - dotnet restore
+    - dotnet dev-certs https
+    - dotnet run --urls "https://localhost:7102" &
+    - echo "Waiting for the application to start..."
+    - for i in `seq 1 30`; do curl -k https://localhost:7102 && break || echo "Waiting..."; sleep 5; done
+    - cd $CI_PROJECT_DIR/Endabnahme/Replay/Replay.FrontendTests #Run the test
+    - dotnet restore
+    - xvfb-run dotnet test --no-restore --verbosity normal
+
+# Author: Felix Nebel
+team13-build:
+  tags:
+  - sopro
+
+  variables:
+    # Additional options for Kaniko executor.
+    # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
+    KANIKO_ARGS: "--single-snapshot"
+    KANIKO_BUILD_CONTEXT: $CI_PROJECT_DIR/Endabnahme/Replay/Replay
+    IMAGE_TAG_NAME: latest
+  stage: deploy
+  image:
+    # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
+    # Only debug/*-debug versions of the Kaniko image are known to work within Gitlab CI
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - export IMAGE_TAG=${CI_REGISTRY_IMAGE}/team13:${IMAGE_TAG_NAME}
+    - echo $IMAGE_TAG
+    - mkdir -p /kaniko/.docker
+    # Write credentials to access Gitlab Container Registry within the runner/ci
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    # Build and push the container. To disable push add --no-push
+    - DOCKERFILE_PATH=${DOCKERFILE_PATH:-"$KANIKO_BUILD_CONTEXT/Dockerfile"}
+    - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $IMAGE_TAG $KANIKO_ARGS

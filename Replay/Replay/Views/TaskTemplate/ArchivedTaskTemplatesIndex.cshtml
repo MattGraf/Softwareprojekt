@@ -1,0 +1,114 @@
+@model Replay.ViewModels.TaskTemplateViewModels.TaskTemplateUserArchivedViewModel;
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        
+</style>
+</head>
+
+@{
+    ViewData["Title"] = "TaskTemplateArchive";
+    ViewData["Hero"] = "AUFGABENVORLAGEN - ARCHIV";
+}
+
+<form method="post" asp-controller="TaskTemplate" asp-action="ArchivedTaskTemplatesIndex">
+
+    <input type="hidden" asp-for="ProcessId" value="@ViewData["OldProcessId"]"/>
+    <input type="hidden" asp-for="SortId" value="@ViewData["OldSortId"]"/>
+
+    <div class="d-flex">
+        <div class="d-flex justify-content-end align-items-center" style="white-space: nowrap; width: 50%; margin-left: auto;">
+            <label for="ProcessId" class="mb-0 mr-2">Filtern nach Prozess:</label>
+
+            &nbsp;
+            
+            <select class="form-select" aria-label="ProcessId" asp-for="NewProcessId">
+                @foreach (var process in Model.ProcessList)
+                {
+                    if (@process.ID == 0)
+                    {
+                        <option value="@process.ID" selected>@process.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@process.ID">@process.Name</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="ProcessId" class="text-danger"></span>
+
+            &nbsp;
+            
+            <button type="submit" name="Filter" value=True class="btn btn-secondary">
+                <i class="bi bi-funnel"></i>
+            </button>
+        </div>
+    </div>
+
+    <br>
+    <br>
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th style="font-size: 1.5em; width: 50%;">
+                            <button type="submit" name="NewSortId" value="2" style="padding: 0; border: none; background: none; font-size: inherit; color: inherit; text-decoration: none;">
+                                Archivierte Aufgabenvorlagen
+                            </button>
+                            @if (@Model.SortId == 2) {
+                                <i class="bi bi-caret-down-fill"></i>
+                            } else {
+                                <i class="bi bi-caret-right-fill"></i>
+                            }
+                        </th>
+                        <th style="width: 50%;">
+                            <button type="submit" name="NewSortId" value="1"style="padding: 0; border: none; background: none; font-size: inherit; color: inherit; text-decoration: none;">
+                                Zugehöriger Prozess
+                            </button>
+                            @if (@Model.SortId == 1) {
+                                <i class="bi bi-caret-down-fill"></i>
+                            } else {
+                                <i class="bi bi-caret-right-fill"></i>
+                            }
+                        </th>
+                        <th style="white-space: nowrap;">
+                            <!-- Empty header for buttons column -->
+                        </th>
+                </thead>
+</form>
+                <tbody>
+                    
+                    @foreach (var taskTemplateViewModel in Model.TaskTemplateViewModelList) {
+                        <tr>
+                            <td>
+                                @taskTemplateViewModel.Name
+                            </td>
+                            <td>
+                                @taskTemplateViewModel.ProcessName
+                            </td>
+                            <td class="text-right" style="white-space: nowrap;">
+                                <form asp-controller="TaskTemplate" asp-action="DetailsArchive" style="display: contents;">
+                                    <button type="submit" name="DetailsId" value="@taskTemplateViewModel.ID" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</button>
+                                </form>
+                               <form asp-controller="TaskTemplate" asp-action="EditArchive" style="display: contents;">
+                                    <button type="submit" name="EditId" value="@taskTemplateViewModel.ID"  class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</button>
+                                </form>
+                                <form asp-controller="TaskTemplate" asp-action="Restore" style="display: contents;">
+                                    <button type="submit" name="RestoreId" value="@taskTemplateViewModel.ID" class="btn btn-info btn-sm"><i class="bi bi-arrow-repeat"></i> Wiederherstellen</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
+                    

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Replay.ViewModels.Account.UserRoleViewModel>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewData["Title"] = "Nutzer Index";
+    ViewData["Hero"] = "NUTZER";
+}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    E-Mail
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    
+                    <td>
+                    <a class="btn btn-warning btn-sm" asp-controller="Account" asp-action="Edit" asp-route-id=@item.Id><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

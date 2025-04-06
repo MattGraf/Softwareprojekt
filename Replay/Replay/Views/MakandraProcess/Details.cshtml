@@ -1,0 +1,173 @@
+@model Replay.ViewModels.Process.MakandraProcessDetailsViewModel
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+
+        td {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        * {
+            box-shadow: none !important;
+        }
+
+        .form-check-input:checked {
+            background-color: rgb(20, 18, 16);
+            border-color: rgb(20, 18, 16);
+        }
+
+        .form-check-input {
+            border-radius: 0.25em;
+        }
+
+        #editbuttonelement {
+            text-align: left;
+        }
+
+        #startbuttonelement {
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .alignright {
+            text-align: right;
+            width: 7.5%;
+        }
+
+        .alignleft {
+            text-align: left;
+            width: 85%;
+        }
+
+        .aligncenter {
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+@{
+    ViewData["Title"] = "Prozessdetails";
+    ViewData["Hero"] = "Prozessdetails";
+}
+
+<a class="btn btn-dark" asp-controller="MakandraProcess" asp-action="Index"><i class="bi bi-arrow-left-circle"></i>
+    Zurück zur Übersicht</a>
+<br>
+<br>
+<h3>Bezeichnung</h3>
+<hr>
+<div class="mb-3">
+    <input type="text" id="disabledTextInput" class="form-control" value="@Model.Name" disabled>
+</div>
+<br>
+<h3>Zugriffsrollen</h3>
+<hr>
+<div>
+    <ul class="list-group">
+        @for (int i = 0; i < Model.RoleSelection.Length; i++)
+            {
+                <li class="list-group-item">
+                    <input type="hidden" asp-for="RoleSelection[i].Name" value="@Model.RoleSelection[i].Name">
+                    <input type="hidden" asp-for="RoleSelection[i].Id" value="@Model.RoleSelection[i].Id">
+                    <input class="form-check-input me-1" asp-for="RoleSelection[i].IsSelected" type="checkbox" id="RoleSelection[i].IsSelected" checked disabled>
+                    <label for="RoleSelection[i].IsSelected" class="form-check-label">@Model.RoleSelection[i].Name</label>
+                    <span asp-validation-for="RoleSelection[i].IsSelected" class="text-danger"></span>
+                </li>
+            }
+    </ul>
+</div>
+<br>
+<h3>Aufgaben</h3>
+<hr>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="alignleft">
+                Aufgabe
+            </th>
+            <th class="alignright">
+                <div class="aligncenter">
+                    Archiviert?
+                </div>
+            </th>
+            <th class="alignright">
+                <div class="aligncenter">
+                    Details
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.Tasks)
+        {
+            <tr>
+                <td class="alignleft">
+                    @t.Name
+                </td>
+                <td class="alignright">
+                    <div class="aligncenter">
+                        Nein
+                    </div>
+                </td>        
+                <td class="alignright">
+                    <form method="post" asp-controller="TaskTemplate" asp-action="DetailsProcess"> 
+                        <input type="hidden" asp-for="Id"/>
+                        <button type="submit" name="TaskTemplateId" value="@t.ID" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</button>
+                    </form>
+                </td>
+                
+            </tr>
+        }
+        @foreach (var a in Model.ArchivedTasks)
+        {
+            <tr class>
+                <td class="alignleft">
+                    @a.Name
+                </td>
+                <td class="alignright">
+                    <div class="aligncenter">
+                        Ja
+                    </div>
+                </td>        
+                <td class="alignright">
+                    <form method="post" asp-controller="TaskTemplate" asp-action="DetailsProcess"> 
+                        <input type="hidden" asp-for="Id"/>
+                        <button type="submit" name="TaskTemplateId" value="@a.ID" class="btn btn-secondary btn-sm"><i class="bi bi-info-circle"></i> Details</button>
+                    </form>
+                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+<br>
+<br>
+<table id="buttontable">
+    <tr>
+        <td id="editbuttonelement">
+            <a class="btn btn-dark btn-lg" asp-controller="MakandraProcess" asp-action="Edit" role="button" asp-route-id="@Model.Id"> <i class="bi bi-pencil-square"></i> Bearbeiten</a>
+        </td>
+        <td id="startbuttonelement">
+            <a class="btn btn-dark btn-lg" asp-controller="MakandraProcess" asp-action="Start" role="button" asp-route-id="@Model.Id"><i class="bi bi-play"></i> Vorgang starten</a>
+        </td>
+    </tr>
+</table>

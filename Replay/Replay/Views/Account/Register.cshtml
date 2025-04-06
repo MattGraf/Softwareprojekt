@@ -1,0 +1,40 @@
+﻿@model Replay.Models.Account.User
+@{
+    ViewData["Title"] = "Registrierung";
+    ViewData["Hero"] = "REGISTRIEREN";
+}
+
+<script src="~/lib/jquery/jquery.js"></script>
+<script src="~/lib/jquery-validate/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+<a class="btn btn-dark" asp-controller="Account" asp-action="Index"><i class="bi bi-arrow-left-circle"></i> Zurück zur Übersicht</a>
+<br>
+<br>
+
+<div class="row">
+    <div class="col-md-3">
+        <form method="post">
+
+            <hr>
+            <div class="form-group">
+                <label asp-for="FullName">Anzeigename</label>
+                <input asp-for="FullName" class="form-control">
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email">E-Mail</label>
+                <input asp-for="Email" class="form-control">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Passwort</label>
+                <input asp-for="Password" class="form-control">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-dark btn-lg" id="register">Registrieren</button>
+            </div>
+        </form>
+    </div>
+</div>

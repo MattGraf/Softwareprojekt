@@ -1,0 +1,193 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay.UnitTests/Replay.UnitTests.csproj": {}
+  },
+  "projects": {
+    "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay.UnitTests/Replay.UnitTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay.UnitTests/Replay.UnitTests.csproj",
+        "projectName": "Replay.UnitTests",
+        "projectPath": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay.UnitTests/Replay.UnitTests.csproj",
+        "packagesPath": "/Users/matthiasgrafberger/.nuget/packages/",
+        "outputPath": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay.UnitTests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/matthiasgrafberger/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/Replay.csproj": {
+                "projectPath": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/Replay.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.10.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "Moq.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.0.2, )"
+            },
+            "Selenium.Support": {
+              "target": "Package",
+              "version": "[4.23.0, )"
+            },
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.0, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.421/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/Replay.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/Replay.csproj",
+        "projectName": "Replay",
+        "projectPath": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/Replay.csproj",
+        "packagesPath": "/Users/matthiasgrafberger/.nuget/packages/",
+        "outputPath": "/Users/matthiasgrafberger/Documents/GitHub/team-13/Endabnahme/Replay/Replay/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/matthiasgrafberger/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.Toolkit.Parsers": {
+              "target": "Package",
+              "version": "[6.1.1, )"
+            },
+            "Selenium.WebDriver": {
+              "target": "Package",
+              "version": "[4.21.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.421/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

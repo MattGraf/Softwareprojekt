@@ -1,0 +1,65 @@
+﻿@model Replay.ViewModels.Account.UserRoleViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+    ViewData["Hero"] = "NUTZERBEARBEITUNG";
+}
+<style>
+
+    .form-check-input:checked {
+        background-color: rgb(20, 18, 16);
+        border-color: rgb(20, 18, 16);
+    }
+
+    .form-check-input {
+        border-radius: 0.25em;
+    }
+
+    input[type=checkbox] {
+        accent-color: rgb(20, 18, 16);
+        border-color: rgb(20, 18, 16);
+        border-radius: 0.25em;
+    }
+
+
+</style>
+<a class="btn btn-dark" asp-controller="Account" asp-action="Index"><i class="bi bi-arrow-left-circle"></i> Zurück zur Übersicht</a>
+<br>
+<br>
+<form asp-controller="Account" asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-group">
+        <label asp-for="FullName" class="control-label">Anzeigename</label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">E-Mail</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input asp-for="Active" type="checkbox" class="form-check-input" />
+        <label asp-for="Active" class="control-label">Aktiv</label>
+        <span asp-validation-for="Active" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <ul class="list-group">
+            @for (int i = 0; i < Model.Roles.Count; i++)
+            {
+                <li class="list-group-item">
+                    @Html.HiddenFor(m => m.Roles[i].Id)
+                    @Html.HiddenFor(m => m.Roles[i].Name)
+                    @Html.CheckBoxFor(m => m.Roles[i].Selected)
+                    @Html.DisplayFor(m => m.Roles[i].Name)
+                </li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit" class="btn btn-success">Speichern</button>
+</form>

@@ -1,0 +1,149 @@
+@model Replay.ViewModels.TaskTemplateViewModels.TaskTemplateCreateViewModel;
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+
+@{
+    ViewData["Title"] = "TaskTemplateCreate";
+    ViewData["Hero"] = "AUFGABENVORLAGEN - ERSTELLUNG";
+}
+
+
+<form method="post" asp-controller="TaskTemplate" asp-action="Create">
+
+
+    <h3>Name</h3>
+    <hr>
+    <div class="form-group">
+        <input class="form-control" id="Name" asp-for ="Name" type="text">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <h3>Anleitung</h3>
+    <div class="form-group">
+        <textarea class="form-control" rows="10" id="Instruction" asp-for ="Instruction" type="text"></textarea>
+        <span asp-validation-for="Instruction" class="text-danger"></span>
+        
+    </div>
+
+    <br>
+
+    <h3>Vertragsziele</h3>
+    <hr>
+    <div>
+        <ul class="list-group">
+            @for (int i = 0; i < Model.ContractTypes.Length; i++)
+            {
+                <li class="list-group-item">
+                    <input type="hidden" asp-for="ContractTypes[i].Name" value="@Model.ContractTypes[i].Name" />
+                    <input class="form-check-input me-1" id="ContractTypes[i].Name" type="checkbox" asp-for="ContractTypes[i].IsSelected">
+                    <label class="form-check-label" for="ContractTypes[i].IsSelected">@Model.ContractTypes[i].Name</label>
+                    <span asp-validation-for="ContractTypes[i].IsSelected" class="text-danger"></span>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <br>
+
+    <h3>Abteilungen</h3>
+    <hr>
+    <div>
+        <ul class="list-group">
+            @for (int i = 0; i < Model.Departments.Count; i++)
+            {
+                <li class="list-group-item">
+                    <input type="hidden" asp-for="Departments[i].Name" value="@Model.Departments[i].Name" />
+                    <input class="form-check-input me-1" type="checkbox" asp-for="Departments[i].IsSelected">
+                    <label class="form-check-label" for="Departments[i].IsSelected">@Model.Departments[i].Name</label>
+                    <span asp-validation-for="Departments[i].IsSelected" class="text-danger"></span>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <br>
+
+    <h3>Fälligkeit</h3>
+    <hr>
+    <div>
+
+        <select class="form-select" aria-label="Faelligkeit" id="Duedate" asp-for="Duedate">
+
+            @foreach (var duedate in Model.Duedates) {
+                if(duedate.ID == 1) { <option value="@duedate.ID" selected>@duedate.Name</option> }
+                else { <option value="@duedate.ID">@duedate.Name</option> }
+            }
+
+        </select>
+        <span asp-validation-for="Duedate" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <h3>Übliche Verantwortung</h3>
+    <hr>
+    <div>
+
+        <select class="form-select" aria-label="DefaultResponsible" id="DefaultResponsible" asp-for="DefaultResponsible">
+
+            @foreach (var defaultResponsible in Model.DefaultResponsibles) {
+                if(defaultResponsible.Equals("Vorgangsverantwortlicher")) { <option value="@defaultResponsible" selected>@defaultResponsible</option> }
+                else { <option value="@defaultResponsible" >@defaultResponsible</option> }
+            }
+
+        </select>
+        <span asp-validation-for="Duedate" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <h3>Prozess</h3>
+    <hr>
+    <div>
+        <select class="form-select" aria-label="MakandraProcessId" id="MakandraProcessId" asp-for="MakandraProcessId">
+
+            @foreach (var process  in Model.Processes) {
+                if(@process.ID == 0) { <option value="@process.ID" selected>@process.Name</option> }
+                else { <option value="@process.ID">@process.Name</option> }
+            }
+
+        </select>
+        <span asp-validation-for="MakandraProcessId" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <h3>Archiviert</h3>
+    <hr>
+    <div>
+
+        <ul class="list-group">
+            <li class="list-group-item">
+
+                <input class="form-check-input me-1" type="checkbox" id="Archived" asp-for="Archived">
+                <label class="form-check-label" for="Archived">Ja</label>
+                <span asp-validation-for="Archived" class="text-danger"></span>
+            
+            </li>
+        </ul>
+        <span asp-validation-for="Archived" class="text-danger"></span>
+    </div>
+
+    <br>
+
+    <div class="d-flex justify-content-between">
+        <div class="text-left">
+            <a class="btn btn-dark btn-lg" id="Back" asp-controller="TaskTemplate" asp-action="Index" role="button">Zurück</a>
+        </div>
+        <div class="form-group">
+            <button type="submit"  id="Create" class="btn btn-dark btn-lg">Bestätigen</button>
+        </div>
+    </div>
+
+</form>

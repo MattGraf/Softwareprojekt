@@ -1,0 +1,87 @@
+@model Replay.ViewModels.Process.MakandraProcessCreateViewModel
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .form-check-input:checked {
+            background-color: rgb(20, 18, 16);
+            border-color: rgb(20, 18, 16);
+        }
+
+        .form-check-input {
+            border-radius: 0.25em;
+        }
+
+        * {
+            box-shadow: none !important;
+        }
+
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+
+        .alignright {
+            text-align: right;
+        }
+    </style>
+</head>
+
+@{
+    ViewData["Title"] = "Prozesserstellung";
+    ViewData["Hero"] = "Prozess erstellen";
+}
+
+<a class="btn btn-dark" asp-controller="MakandraProcess" asp-action="Index"><i class="bi bi-arrow-left-circle"></i>
+    Zurück zur Übersicht</a>
+<br>
+<br>
+<form asp-action="Create" method="post" asp-controller="MakandraProcess">
+    <div class="text-danger"></div>
+
+    <h3>Bezeichnung</h3>
+    <hr>
+    <div class="form-group">
+        <input class="form-control" asp-for="Name" type="text">
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+    <br>
+    <h3>Zugriffsrollen</h3>
+    <hr>
+    <div>
+        <ul class="list-group">
+            @for (int i = 0; i < Model.Roles.Length; i++)
+            {
+                <li class="list-group-item">
+                    <input type="hidden" asp-for="Roles[i].Name" value="@Model.Roles[i].Name">
+                    <input type="hidden" asp-for="Roles[i].Id" value="@Model.Roles[i].Id">
+                    @if (Model.Roles[i].Name == "Administrator")
+                    {
+                        <input class="form-check-input me-1" asp-for="Roles[i].IsSelected" type="checkbox" id="Roles[i].IsSelected" checked disabled>
+                    }
+                    else
+                    {
+                        <input class="form-check-input me-1" asp-for="Roles[i].IsSelected" type="checkbox" id="Roles[i].IsSelected">
+                    }
+                    <label for="Roles[i].IsSelected" class="form-check-label">@Model.Roles[i].Name</label>
+                    <span asp-validation-for="Roles[i].IsSelected" class="text-danger"></span>
+                </li>
+            }
+        </ul>
+    </div>
+    <br>
+    <h3>Aufgaben</h3>
+    <hr>
+    <label>Aufgaben können unter "Aufgabenvorlagen" erstellt, verwaltet und Prozessen zugeordnet werden.</label>
+    <br>
+    <br>
+    <div class="form-group confirmbutton">
+        <input type="submit" value="Speichern" class="btn btn-dark btn-lg" id="create">
+    </div>
+</form>

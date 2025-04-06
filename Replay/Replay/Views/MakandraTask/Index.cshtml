@@ -1,0 +1,388 @@
+@model Replay.ViewModels.Task.MakandraTaskUserViewModel
+@using System.Globalization;
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Roboto;
+            font-weight: 300;
+        }
+        h1 {
+            font-family: Roboto;
+            font-weight: 700;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .status-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status-arrow {
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .status-arrow i {
+            font-size: 18px; /* Größe der Pfeile */
+        }
+
+        .status-arrow.hidden {
+            display: none;
+        }
+        .save-button.hidden {
+            display: none;
+        }
+
+        button {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+        }
+
+    </style>
+</head>
+
+@{
+    ViewData["Hero"] = "Meine Aufgaben";
+    ViewData["Title"] = "Aufgaben für " + Model.User.FullName;
+    CultureInfo germanCulture = new CultureInfo("de-DE");
+}
+
+<form method="get" asp-action="Index" class="mb-3">
+    <button asp-action="Archive" type="submit" class="btn btn-success">
+        <i class="bi bi-arrow-left-circle">
+        </i>
+        Erledigte Aufgaben
+    </button> 
+    <div class="form-group row">
+        <label for="procedureFilter" class="col-sm-2 col-form-label">Vorgangsfilter:</label>
+        <div class="col-sm-8">
+            <input type="text" name="procedureFilter" id="procedureFilter" value="@ViewData["ProcedureFilter"]" class="form-control" placeholder="Vorgangsnamen eingeben" />
+        </div>
+        <div class="col-sm-2 d-flex align-items-center">
+            <button type="submit" class="btn btn-dark">
+                <i class="bi bi-filter-circle"></i>
+                Filtern
+            </button>
+            <button type="submit" asp-action="ResetFilterIndex" class="btn btn-dark">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
+<h2>Aufgaben für @Model.User.FullName</h2>
+
+@if (Model.Tasklist != null && Model.Tasklist.Any())
+{
+    <table class="table" id="user">
+        <thead>
+            <tr>
+                <th asp-action="Index" asp-route-userSortOrder="@ViewData["UserDateSortParam"]">
+                        Aufgabe
+                </th>
+                <th asp-action="Index" asp-route-userSortOrder="@ViewData["UserDateSortParam"]">
+                        Vorgang
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-userSortOrder="@ViewData["UserDateSortParam"]">
+                        <i class="bi bi-arrow-down-up"></i>
+                    </a>
+                        Zieldatum
+                </th>
+                <th>Aufgabenstatus</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model.Tasklist)
+            {
+                @if (task != null)
+                {
+                    string rowStyle = "";
+                    if (task.TargetDate < DateTime.Now)
+                    {
+                        rowStyle = "color: red;";
+                    }
+                    <tr style="@rowStyle">
+                        <td>@task.Name</td>
+                        <td>@task.Procedure</td>
+                        <td>
+                            @task.TargetDate.ToString("dd.MM.yyyy", germanCulture)
+                            @if (task.TargetDate < DateTime.Now.AddDays(1))
+                            {
+                                <text> (Überfällig)</text>
+                            }
+                        </td>
+                        <td>
+                            <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="prev">
+                                <i class="bi bi-arrow-left-circle"></i>
+                            </a>
+                            <span class="current-status" data-task-id="@task.Id">@task.State</span>
+                            <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="next">
+                                <i class="bi bi-arrow-right-circle"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Detail" asp-route-id="@task.Id" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                            <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                            <button type="button" class="btn btn-success btn-sm save-button" style="display: none;" data-task-id="@task.Id">
+                                <i class="bi bi-floppy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Keine Aufgaben gefunden.</p>
+}
+
+<h2>Vorgangsverantwortlichkeit</h2>
+
+@if (Model.TasksForResponsible != null && Model.TasksForResponsible.Any())
+{
+    <table class="table" id="vuser">
+        <thead>
+            <tr>
+                <th asp-action="Index" asp-route-responsibleSortOrder="@ViewData["ResponsibleDateSortParam"]">
+                        Aufgabe
+                </th>
+                <th asp-action="Index" asp-route-responsibleSortOrder="@ViewData["ResponsibleDateSortParam"]">
+                        Vorgang
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-responsibleSortOrder="@ViewData["ResponsibleDateSortParam"]">
+                        <i class="bi bi-arrow-down-up"></i>
+                    </a>
+                        Zieldatum
+                </th>
+                <th>Aufgabenzuständiger</th>
+                <th>Aufgabenstatus</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model.TasksForResponsible)
+            {
+                @if (task != null)
+                {
+                    string rowStyle = "";
+                    if (task.TargetDate < DateTime.Now.AddDays(1))
+                    {
+                        rowStyle = "color: red;";
+                    }
+                    <tr style="@rowStyle">
+                        <td>@task.Name</td>
+                        <td>@task.Procedure</td>
+                        <td>
+                            @task.TargetDate.ToString("dd.MM.yyyy", germanCulture)
+                            @if (task.TargetDate < DateTime.Now)
+                            {
+                                <text> (Überfällig)</text>
+                            }
+                        </td>
+                        @if (task.Assignee != null)
+                        {
+                            <td>@task.Assignee</td>
+                        }
+                        else
+                        {
+                            <td>Keiner</td>
+                        }
+                        <td>
+                            <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="prev">
+                                <i class="bi bi-arrow-left-circle"></i>
+                            </a>
+                            <span class="current-status" data-task-id="@task.Id">@task.State</span>
+                            <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="next">
+                                <i class="bi bi-arrow-right-circle"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Detail" asp-route-id="@task.Id" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                            <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                            <button type="button" class="btn btn-success btn-sm save-button" style="display: none;" data-task-id="@task.Id">
+                                <i class="bi bi-floppy"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Keine Aufgaben gefunden.</p>
+}
+
+@for (int i = 0; i < Model.Roles.Count; i++)
+{
+    var role = Model.Roles[i];
+    var tasksForRole = Model.TasksForRoles[i];
+
+    <h2>Aufgaben für @role.Name</h2>
+
+    @if (tasksForRole != null && tasksForRole.Any())
+    {
+        <table class="table" id=@role.Name>
+            <thead>
+                <tr>
+                    <th asp-action="Index" asp-route-roleSortOrder="@ViewData[$"Role{i}DateSortParam"]">
+                            Aufgabe
+                    </th>
+                    <th asp-action="Index" asp-route-roleSortOrder="@ViewData[$"Role{i}DateSortParam"]">
+                            Vorgang
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-roleSortOrder="@ViewData[$"Role{i}DateSortParam"]">
+                            <i class="bi bi-arrow-down-up"></i>
+                        </a>
+                        Zieldatum
+                    </th>
+                    <th>Aufgabenstatus</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in tasksForRole)
+                {
+                    @if (task != null)
+                    {
+                        string rowStyle = "";
+                        if (task.TargetDate < DateTime.Now.AddDays(1))
+                        {
+                            rowStyle = "color: red;";
+                        }
+                        <tr style="@rowStyle">
+                            <td>@task.Name</td>
+                            <td>@task.Procedure</td>
+                            <td>
+                                @task.TargetDate.ToString("dd.MM.yyyy", germanCulture)
+                                @if (task.TargetDate < DateTime.Now)
+                                {
+                                    <text> (Überfällig)</text>
+                                }
+                            </td>
+                            <td>
+                                <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="prev">
+                                    <i class="bi bi-arrow-left-circle"></i>
+                                </a>
+                                <span class="current-status" data-task-id="@task.Id">@task.State</span>
+                                <a href="#" class="status-arrow" data-task-id="@task.Id" data-direction="next">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-action="Detail" asp-route-id="@task.Id" class="btn btn-success btn-sm"><i class="bi bi-info-circle"></i> Details</a>
+                                <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Bearbeiten</a>
+                                <button type="button" class="btn btn-success btn-sm save-button" style="display: none;" data-task-id="@task.Id">
+                                    <i class="bi bi-floppy"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Keine Aufgaben gefunden.</p>
+    }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var statusOrder = ["Offen", "In Bearbeitung", "Erledigt"];
+            var newStatus = null;
+
+            function showSaveButton(taskId) {
+                $('.save-button[data-task-id="' + taskId + '"]').show();
+            }
+
+            function hideSaveButton(taskId) {
+                $('.save-button[data-task-id="' + taskId + '"]').hide();
+            }
+
+            function updateStatus(taskId, status) {
+                $.ajax({
+                    url: '@Url.Action("IndexUpdateTaskStatus", "MakandraTask")',
+                    type: 'POST',
+                    data: {
+                        id: taskId,
+                        stateName: status
+                    },
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Fehler beim Aktualisieren des Status: ' + error);
+                    }
+                });
+            }
+
+            $('.status-arrow').click(function (event) {
+                event.preventDefault();
+
+                var button = $(this);
+                var taskId = button.data('task-id');
+                var direction = button.data('direction');
+                var currentStatusElement = $('.current-status[data-task-id="' + taskId + '"]');
+                var currentStatus = currentStatusElement.text().trim();
+
+                var currentIndex = statusOrder.findIndex(status => new RegExp(`^(${status})+$`).test(currentStatus));
+                if (currentIndex === -1) {
+                    console.error('Unbekannter Status: ' + currentStatus);
+                    alert('Unbekannter Status: ' + currentStatus);
+                    return;
+                }
+
+                var newIndex;
+                if (direction === 'next') {
+                    newIndex = (currentIndex + 1) % statusOrder.length;
+                } else if (direction === 'prev') {
+                    newIndex = (currentIndex - 1 + statusOrder.length) % statusOrder.length;
+                } else {
+                    alert('Richtung unbekannt: ' + direction);
+                    return;
+                }
+
+                newStatus = statusOrder[newIndex];
+                currentStatusElement.text(newStatus);
+
+                showSaveButton(taskId);
+            });
+
+            $('.save-button').click(function () {
+                var button = $(this);
+                var taskId = button.data('task-id');
+
+                if (newStatus !== null) {
+                    updateStatus(taskId, newStatus);
+                    hideSaveButton(taskId);
+                    newStatus = null; // Rücksetzen der neuen Statusvariable
+                }
+            });
+
+            // Verstecke Speichern-Button beim Laden
+            $('.save-button').each(function () {
+                var taskId = $(this).data('task-id');
+                hideSaveButton(taskId);
+            });
+        });
+    </script>
+}
